@@ -16,7 +16,7 @@ export async function handleProxy(request, env, ctx) {
         }
 
         // TODO: Build headers
-        const proxyHeaders = appendProxyHeaders(headers)
+        let proxyHeaders = appendProxyHeaders(headers)
         proxyHeaders = sanitizeHeaders(proxyHeaders)
         
         // TODO: build request init
