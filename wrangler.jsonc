@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "cf-proxy-relay",
+	"name": "proxy-relay",
 	"main": "src/index.js",
 	"compatibility_date": "2025-11-28",
 	"observability": {
