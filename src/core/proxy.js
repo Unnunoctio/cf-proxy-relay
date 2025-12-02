@@ -1,5 +1,5 @@
 import { appendProxyHeaders, sanitizeHeaders } from "../core/headers"
-import { fetchWithRetries } from "../utils/fetcher"
+import { fetchWithRetry } from "../utils/fetcher"
 import { safeJsonParse } from "../utils/utils"
 
 
@@ -36,7 +36,7 @@ export async function handleProxy(request, env, ctx) {
         }
 
         // TODO: fetch with retries
-        const response = await fetchWithRetries(url, requestInit)
+        const response = await fetchWithRetry(url, requestInit)
 
         // TODO: response how to stream if not is JSON
         const contentType = response.headers.get("content-type") || ""
