@@ -1,3 +1,4 @@
+import { VALID_METHODS } from "../config/constants"
 
 export function validateRequest(body) {
     if (!body.url) {
@@ -13,8 +14,7 @@ export function validateRequest(body) {
         return { success: false, error: "Invalid URL" }
     }
 
-    const validMethods = ["GET", "POST", "PUT", "DELETE", "PATCH"]
-    if (body.method && !validMethods.includes(body.method.toUpperCase())) {
+    if (body.method && !VALID_METHODS.includes(body.method.toUpperCase())) {
         return { success: false, error: "Invalid HTTP method" }
     }
 

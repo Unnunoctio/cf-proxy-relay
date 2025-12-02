@@ -3,11 +3,10 @@
 	"name": "cf-proxy-relay",
 	"main": "src/index.js",
 	"compatibility_date": "2025-11-28",
-	"observability": {
-		"enabled": false
-	},
+	"preview_urls": false,
+	"observability": { "enabled": false },
 	"vars": {
-		"API_KEY": ""
+		"API_KEY": "test-api-key",
 	},
 	/**
 	 * Smart Placement

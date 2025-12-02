@@ -16,8 +16,3 @@ export const DEFAULT_HEADERS = {
 export const FORBIDDEN_HEADERS = ["host", "connection", "content-length"]
 
 export const VALID_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"]
-
-export const TIMEOUT_LIMITS = {
-    MIN: 1000,
-    MAX: 30000
-}
