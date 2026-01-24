@@ -1,16 +1,21 @@
 {
-	"name": "cf-proxy-relay",
-	"version": "0.0.0",
-	"private": true,
-	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler dev",
-		"start": "wrangler dev",
-		"test": "vitest"
-	},
-	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "0.8.19",
-		"vitest": "3.2.0",
-		"wrangler": "4.51.0"
-	}
+  "name": "cf-proxy-relay",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "0.8.19",
+    "vitest": "3.2.0",
+    "wrangler": "4.51.0"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "test": "vitest",
+    "build": "wrangler deploy --dry-run --outdir=dist",
+    "tf:init": "terraform init",
+    "tf:plan": "pnpm run build && terraform plan",
+    "tf:deploy": "pnpm run build && terraform apply",
+    "tf:destroy": "terraform destroy",
+    "deploy": "pnpm run tf:deploy"
+  }
 }
