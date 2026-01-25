@@ -16,7 +16,7 @@ provider "cloudflare" {
 resource "cloudflare_worker_script" "proxy_relay" {
     account_id = var.cloudflare_account_id
     name       = var.worker_name
-    content    = file("${path.module}/dist/index.js")
+    content    = file("${path.module}/../dist/index.js")
 
     module     = true
 
