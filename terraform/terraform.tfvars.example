@@ -1,4 +1,0 @@
-cloudflare_api_token  = "your-cloudflare-api-token"
-cloudflare_account_id = "your-cloudflare-account-id"
-worker_name           = "your-worker-name"
-api_key               = "your-api-key-securely-32-characters-min"
