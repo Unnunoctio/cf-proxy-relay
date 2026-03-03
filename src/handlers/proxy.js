@@ -2,6 +2,7 @@ import { authApiKey } from "../middleware/auth";
 import { executeProxy } from "../services/proxy";
 import { formatError, formatResponse } from "../utils/response";
 import { validateRequest } from "../validators/request";
+import { MAX_BODY_SIZE } from "../config/constants";
 
 export async function proxyHandler(request, env, ctx) {
     try {
@@ -16,9 +17,18 @@ export async function proxyHandler(request, env, ctx) {
         }
 
         // TODO: Parse & Validate
+        const contentLength = request.headers.get("content-length")
+        if (contentLength && parseInt(contentLength) > MAX_BODY_SIZE) {
+            return formatError("Request body too large", 413)
+        }
+
         let body
         try {
-            body = await request.json()
+            const text = await request.text()
+            if (text.length > MAX_BODY_SIZE) {
+                return formatError("Request body too large", 413)
+            }
+            body = JSON.parse(text)
         } catch {
             return formatError("Invalid JSON body", 400)
         }

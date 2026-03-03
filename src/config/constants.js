@@ -16,3 +16,5 @@ export const DEFAULT_HEADERS = {
 export const FORBIDDEN_HEADERS = ["host", "connection", "content-length"]
 
 export const VALID_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+
+export const MAX_BODY_SIZE = 1024 * 1024 // 1 MB
