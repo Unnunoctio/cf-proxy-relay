@@ -1,4 +1,4 @@
-# 🚀 cf-proxy-relay
+# cf-proxy-relay
 
 Un **Cloudflare Worker seguro, ligero y extensible** que actúa como un **proxy relay** para realizar solicitudes HTTP hacia servicios externos.
 
@@ -8,137 +8,75 @@ Este proyecto fue creado para **evitar los bloqueos producidos por el propio ser
 
 ---
 
-## ✨ Características
+## Características
 
-- **CORS Automático**
-  Manejo nativo de solicitudes `OPTIONS` y cabeceras configurables.
-
-- **Autenticación por API Key**
-  Requiere el header `X-API-Key` para todas las solicitudes.
-
-- **Validación de Entrada**
-  - URL válida (`http` o `https`)
-  - Métodos permitidos: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`
-
-- **Proxy Seguro**
-  Reenvía headers, método, cuerpo y timeout personalizados.
-
-- **Timeout y AbortController**
-  Control de solicitudes lentas o colgadas.
-
-- **Errores Estructurados**
-  Respuestas JSON claras y consistentes para depuración y consumo por APIs.
-
-- **Infraestructura como Código**
-  Despliegue automatizado con Terraform.
+- **CORS Automático** — manejo nativo de solicitudes `OPTIONS` y cabeceras configurables.
+- **Autenticación por API Key** — requiere el header `X-API-Key` para todas las solicitudes.
+- **Validación de Entrada** — URL válida (`http`/`https`), métodos permitidos: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`.
+- **Proxy Seguro** — reenvía headers, método, cuerpo y timeout personalizados.
+- **Timeout y AbortController** — control de solicitudes lentas o colgadas.
+- **Errores Estructurados** — respuestas JSON claras y consistentes.
 
 ---
 
-## 📦 Instalación
+## Instalación
 
-1. Clonar el repositorio:
-
-``` bash
+```bash
 git clone <repository-url>
 cd cf-proxy-relay
-```
-
-2. Instalar dependencias:
-
-``` bash
 pnpm install
 ```
 
 ---
 
-## ⚙️ Configuración
+## Configuración
 
-### 1. Configurar Terraform:
+### Desarrollo local
 
-``` bash
-# Copiar archivo de ejemplo
-cp terraform.tfvars.example terraform.tfvars
+Copia el archivo de ejemplo y agrega tu API key:
 
-# Editar con tus credenciales
-nano terraform.tfvars
+```bash
+cp .dev.vars.example .dev.vars
 ```
 
-### 2. Obtener Credenciales de Cloudflare:
+`.dev.vars` es leído automáticamente por `wrangler dev`.
 
-**API Token:**
-1. Ve a https://dash.cloudflare.com/profile/api-tokens
-2. Click en "Create Token"
-3. Usa la plantilla "Edit Cloudflare Workers"
-4. Copia el token generado
+### Producción
 
-**Account ID:**
-1. Ve a https://dash.cloudflare.com
-2. Selecciona cualquier sitio
-3. En la barra lateral derecha, verás tu "Account ID"
+El secret `API_KEY` se gestiona directamente con Wrangler:
 
-### 3. Llenar `terraform.tfvars`:
-
-``` hcl
-cloudflare_api_token  = "your-cloudflare-api-token"
-cloudflare_account_id = "your-cloudflare-account-id"
-worker_name           = "your-worker-name"
-api_key               = "your-api-key-securely-32-characters-min"
+```bash
+wrangler secret put API_KEY
 ```
 
 ---
 
-## 🚀 Despliegue
+## Despliegue
 
-### Desarrollo Local
-
-``` bash
-pnpm dev
-```
-
-### Deploy a Producción (con Terraform)
-
-``` bash
-# Opción 1: Usando npm scripts
-pnpm run tf:init
-pnpm run deploy
-
-# Opción 2: Manual
-pnpm run build
-terraform init
-terraform plan
-terraform apply
-```
-
-### Comandos Terraform Disponibles
-
-``` bash
-pnpm run tf:init      # Inicializar Terraform
-pnpm run tf:plan      # Ver plan de despliegue
-pnpm run tf:deploy    # Desplegar a Cloudflare
-pnpm run tf:destroy   # Eliminar el Worker
+```bash
+pnpm dev       # Servidor de desarrollo local
+pnpm deploy    # Deploy a Cloudflare Workers
 ```
 
 ---
 
-## 📡 Uso del API
+## API
 
 **Endpoint**
-``` nginx
-POST https://cf-proxy-relay.<account-id>.workers.dev
+```
+POST https://<worker-name>.<account-subdomain>.workers.dev
 ```
 
-**Headers Requeridos**
+**Headers requeridos**
 
 | Header | Valor |
 | --- | --- |
 | `Content-Type` | `application/json` |
 | `X-API-Key` | Tu `API_KEY` configurada |
 
----
+**Cuerpo de la solicitud**
 
-🔄 Cuerpo de la Solicitud
-
-``` jsonc
+```jsonc
 {
     "url": "https://api.example.com/data",
     "method": "POST",
@@ -152,75 +90,48 @@ POST https://cf-proxy-relay.<account-id>.workers.dev
 }
 ```
 
-**Parámetros**
-
 | Parámetro | Tipo | Requerido | Descripción |
 | --- | --- | --- | --- |
 | `url` | String | Sí | URL destino (http/https). |
 | `method` | String | No | Método HTTP (default: `GET`). |
 | `headers` | Object | No | Cabeceras adicionales a enviar. |
 | `body` | Object | No | Se serializa automáticamente a JSON. |
-| `timeout` | Number | No | Tiempo de espera en milisegundos (default: `30000`).
+| `timeout` | Number | No | Tiempo de espera en ms (default: `30000`). |
 
----
+**Ejemplo cURL**
 
-## 🧪 Ejemplo cURL
-
-``` bash
+```bash
 curl -X POST https://your-worker.workers.dev \
     -H "Content-Type: application/json" \
     -H "X-API-Key: your-secure-api-key" \
     -d '{
         "url": "https://jsonplaceholder.typicode.com/posts",
         "method": "POST",
-        "headers": {
-            "User-Agent": "cf-proxy-relay"
-        },
-        "body": {
-            "title": "foo",
-            "body": "bar",
-            "userId": 1
-        }
+        "body": { "title": "foo", "body": "bar", "userId": 1 }
     }'
 ```
 
 ---
 
-## 🔐 Seguridad Importante
+## Seguridad
 
-Este Worker actúa como un open proxy autenticado, por lo que se recomienda:
+Este Worker actúa como un open proxy autenticado. Recomendaciones:
 
 - Usar API Keys largas y seguras (32+ chars)
-
 - Implementar allowlist de dominios destino
-
 - Limitar tamaño máximo del body
-
 - Agregar rate limiting vía Cloudflare Rules o Turnstile
-
-- Nunca commitear `terraform.tfvars` (está en `.gitignore`)
 
 ---
 
-## 🛠️ Desarrollo
-
-### Requisitos
+## Requisitos
 
 - Node.js >= 18
 - pnpm
-- Terraform >= 1.0
 - Cuenta de Cloudflare
-
-### Scripts Disponibles
-
-``` bash
-pnpm dev          # Servidor de desarrollo local
-pnpm build        # Construir bundle
-pnpm deploy       # Desplegar a Cloudflare
-```
 
 ---
 
-## 📜 Licencia
+## Licencia
 
-Este proyecto está bajo la licencia MIT.
+MIT
