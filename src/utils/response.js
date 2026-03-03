@@ -33,7 +33,7 @@ export function formatResponse(data, status = 200) {
         headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
-            "Cache-Control": status === 200 ? "public, max-age=60" : "no-cache"
+            "Cache-Control": "no-store"
         }
     })
 }
