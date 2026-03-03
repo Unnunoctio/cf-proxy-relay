@@ -13,13 +13,14 @@ export function buildHeaders(customHeaders = {}) {
 }
 
 export function extractHeaders(headers) {
-    const relevant = ["content-type", "content-length", "cache-control", "etag"]
+    const skip = ["transfer-encoding", "connection", "keep-alive"]
     const extracted = {}
 
-    relevant.forEach(header => {
-        const value = headers.get(header)
-        if (value) extracted[header] = value
-    })
+    for (const [key, value] of headers) {
+        if (!skip.includes(key.toLowerCase())) {
+            extracted[key] = value
+        }
+    }
 
     return extracted
 }
