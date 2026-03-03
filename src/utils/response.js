@@ -15,9 +15,14 @@ export async function parseResponse(response) {
     }
 
     const buffer = await response.arrayBuffer()
+    const bytes = new Uint8Array(buffer)
+    let binary = ""
+    for (let i = 0; i < bytes.length; i++) {
+        binary += String.fromCharCode(bytes[i])
+    }
     return {
         type: "binary",
-        base64: btoa(String.fromCharCode(...new Uint8Array(buffer))),
+        base64: btoa(binary),
         contentType
     }
 }

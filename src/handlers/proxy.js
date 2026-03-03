@@ -16,7 +16,12 @@ export async function proxyHandler(request, env, ctx) {
         }
 
         // TODO: Parse & Validate
-        const body = await request.json()
+        let body
+        try {
+            body = await request.json()
+        } catch {
+            return formatError("Invalid JSON body", 400)
+        }
         const validation = validateRequest(body)
         if (!validation.success) {
             return formatError(validation.error, 400)

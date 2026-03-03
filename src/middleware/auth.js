@@ -1,5 +1,5 @@
 
-export function authApiKey(request, env) {
+export async function authApiKey(request, env) {
     if (!env.API_KEY) {
         return { success: true }
     }

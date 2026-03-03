@@ -18,5 +18,11 @@ export function validateRequest(body) {
         return { success: false, error: "Invalid HTTP method" }
     }
 
+    if (body.timeout !== undefined) {
+        if (typeof body.timeout !== "number" || !Number.isFinite(body.timeout) || body.timeout <= 0) {
+            return { success: false, error: "timeout must be a positive number" }
+        }
+    }
+
     return { success: true }
 }
